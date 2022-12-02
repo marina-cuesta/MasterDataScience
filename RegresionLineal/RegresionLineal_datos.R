@@ -1,6 +1,6 @@
-library(graphics)
 library(dplyr)
 library(RKEEL)
+
 
 ##############################
 ####    mtcars DATA SET   ####
@@ -98,6 +98,7 @@ pairs(abalone, panel = panel.smooth, main = "abalone data")
 ################################
 
 # https://rdrr.io/rforge/AppliedPredictiveModeling/man/concrete.html
+# https://archive.ics.uci.edu/ml/datasets/Concrete+Compressive+Strength
 # Variable respuesta: CompressiveStrength
 
 # install.packages("AppliedPredictiveModeling")
@@ -113,29 +114,6 @@ str(concrete)
 summary(concrete)
 # SPLOM
 pairs(concrete, panel = panel.smooth, main = "concrete data")
-
-
-
-####################################################
-####    ChemicalManufacturingProcess DATA SET   ####
-####################################################
-
-# https://rdrr.io/rforge/AppliedPredictiveModeling/man/ChemicalManufacturingProcess.html
-# Variable respuesta: CompressiveStrength
-
-# install.packages("AppliedPredictiveModeling")
-library(AppliedPredictiveModeling)
-# Llamamos a los datos
-data(ChemicalManufacturingProcess)
-# Mostramos datos
-head(ChemicalManufacturingProcess)
-# Dimensiones
-dim(ChemicalManufacturingProcess)
-# Variables e info
-str(ChemicalManufacturingProcess)
-summary(ChemicalManufacturingProcess)
-# SPLOM
-pairs(ChemicalManufacturingProcess, panel = panel.smooth, main = "ChemicalManufacturingProcess data")
 
 
 
@@ -177,15 +155,98 @@ california=read.keel(file_name)
 # Mostramos datos
 head(california)
 # Dimensiones
-dim(california)
+dim(california) # submuestrear si es necesario
 # Variables e info
 str(california)
 # Pasamos variable MedianHouseValue a numerica
 california = california %>% 
-  mutate(MedianHouseValue=as.numeric(MedianHouseValue))
+  mutate(MedianHouseValue=as.numeric(as.character(MedianHouseValue)))
 summary(california)
 # SPLOM
 pairs(california, panel = panel.smooth, main = "california data")
 
 
+
+################################
+####    mortgage DATA SET   ####
+################################
+
+# https://sci2s.ugr.es/keel/dataset.php?cod=43
+# Variable respuesta: X30Y.CMortgageRate
+
+# Leemos a los datos
+file_name=paste0(getwd(),"/RegresionLineal/data/mortgage.dat")
+mortgage=read.keel(file_name)
+
+# Mostramos datos
+head(mortgage)
+# Dimensiones
+dim(mortgage) # submuestrear si es necesario!
+# Variables e info
+str(mortgage)
+# Pasamos variable MedianHouseValue a numerica
+mortgage = mortgage %>% 
+  mutate(X30Y.CMortgageRate=as.numeric(as.character(X30Y.CMortgageRate)))
+summary(mortgage)
+# SPLOM
+pairs(mortgage, panel = panel.smooth, main = "mortgage data")
+
+
+
+#################################
+####    SeoulBike DATA SET   ####
+#################################
+
+# https://archive.ics.uci.edu/ml/datasets/Seoul+Bike+Sharing+Demand
+# Variable respuesta: Rented Bike Count
+
+# Leemos a los datos
+file_name=paste0(getwd(),"/RegresionLineal/data/SeoulBikeData.csv")
+SeoulBike=read.table(file_name,sep=",")
+
+# Mostramos datos
+head(SeoulBike)
+
+# La primera fila son los nombres de las columnas
+colnames(SeoulBike)=as.character(SeoulBike[1,])
+head(SeoulBike)
+# aun asi los nombres de las variables son poco manejables. Los cambiamos
+colnames(SeoulBike)= c("date","rented_bike_count", "hour", "temperature" , "humidity","wind_speed" ,
+                       "visibility", "dew_point_temperature","solar_radiation","rainfall","snowfall",
+                       "seasons" ,"holiday","functioning_day")
+# Eliminamos la primera fila
+SeoulBike=SeoulBike[-1,]
+
+# Mostramos datos
+head(SeoulBike)
+
+# Dimensiones
+dim(SeoulBike) 
+# Variables e info
+str(SeoulBike)
+# Cambiamos los tipos de variable
+library(lubridate)
+SeoulBike = SeoulBike %>% 
+  mutate(date=as.Date(date, format = "%d/%m/%Y")) %>% 
+  mutate(across(-c(date,seasons,holiday,functioning_day),as.numeric)) %>% 
+  mutate(across(c(seasons,holiday,functioning_day),as.factor))
+str(SeoulBike)
+
+# resumen de la tabla
+summary(SeoulBike)
+# SPLOM
+pairs(SeoulBike, panel = panel.smooth, main = "SeoulBike data")
+
+
+
+####################################
+####    stock prices DATA SET   ####
+####################################
+
+# https://sci2s.ugr.es/keel/dataset.php?cod=77
+# Variable respuesta: Company10
+
+
+# Leemos a los datos
+# PARA HACER EN CLASE
 
