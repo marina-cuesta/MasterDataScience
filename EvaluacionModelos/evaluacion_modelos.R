@@ -334,16 +334,37 @@ confusionMatrix(decisiontree_table_test, mode="prec_recall", positive="1")
 ## paquete caret
 # https://topepo.github.io/caret/available-models.html
 
+
+## para cross validation dividimos en train, test
+
+# Porcentajes de train, test y validation
+n_train = .75
+n_test = 1 - n_train
+
+# Muestreo
+set.seed(123)
+indices=1:n
+indices_train = sample(1:n, n * n_train)
+indices_test = indices[-c(indices_train)]
+
+# separamos la base de datos en train, validation, test
+data_train = data[indices_train,]
+data_test = data[indices_test,]
+
+
 ## fijamos la semilla
 set.seed(123)
-
 
 ## definimos la muestra k fold
 train_control <- trainControl(method = "cv",  number = 10)
 
 
 ## entrenamos decision tree con funcion train
-model <- train(diabetes~., data = data,
+model <- train(diabetes~., data = data_train,
                trControl = train_control,
                method = "rpart")
 model
+
+## ya podemos predecir en test
+pred_test=predict(model,type="prob")
+
