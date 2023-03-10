@@ -365,6 +365,16 @@ model <- train(diabetes~., data = data_train,
                method = "rpart")
 model
 
+
+
+# ## entrenamos regresion logistica con funcion train
+# model <- train(diabetes~., data = data_train,
+#                trControl = train_control,
+#                method = "glm",
+#                family = 'binomial' )
+# model
+
+
 ## ya podemos predecir en test
 pred_test=predict(model,type="prob")
 
